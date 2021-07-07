@@ -12,7 +12,7 @@ data temp;
 run;
 
 /* 交叉频数表 */
-proc freq data=temp(where=(App_Rec_Month>=201701)); *筛选条件/
+proc freq data=temp(where=(App_Rec_Month>=201701)); *筛选条件;
 	tables mth_Application_Received*Credit_Bureau_Report/missing list;
 run;
 
