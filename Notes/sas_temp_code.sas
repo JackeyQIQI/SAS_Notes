@@ -1,4 +1,4 @@
-/* 保留字段 */
+/* 筛选字段 */
 data temp;
 	set lib.data(keep=Name Birth Date if_Report);
 run;
@@ -20,3 +20,15 @@ run;
 proc datasets library=work; 
 run;
 
+/* 表间合并 横向*/
+PROC SQL;
+	CREATE TABLE S.E AS
+	SELECT * 
+	FROM C LEFT JOIN A
+	ON C.NAME=A.NAME;
+QUIT;
+
+/* 表间合并 纵向 */
+DATA A12;
+	SET A1 A2;
+RUN;
