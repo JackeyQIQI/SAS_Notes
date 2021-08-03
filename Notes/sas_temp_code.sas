@@ -12,7 +12,7 @@ data temp;
 run;
 
 /* 交叉频数表 */
-proc freq data=temp(where=(mth>='01oct2020'd)); *筛选条件;
+proc freq data=temp(where=(mth>='01oct2020'd and ID in (001 002 003))); *筛选条件;
 	tables mth*if_Report/missing list;
 run;
 
