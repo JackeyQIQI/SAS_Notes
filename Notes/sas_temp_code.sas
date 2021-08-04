@@ -44,6 +44,12 @@ proc freq data=temp(where=(mth>='01oct2020'd and ID in (001 002 003))); *筛选�
 	tables mth*if_Report/missing list;
 run;
 
+/* 排序 */
+proc sort data=temp1(where=(not missing(tag))) out=temp2;
+by var1 descending var2;
+run;
+
+
 /* 查看library各表占用空间 */
 proc datasets library=work; 
 run;
