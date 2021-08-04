@@ -1,6 +1,6 @@
-/* 筛选字段 */
+/* 筛选条件 */
 data temp;
-	set lib.data(keep=Name Birth Date if_Report);
+	set lib.data(where=(Date>="01Jun2021"d) keep=Name Birth Date if_Report);
 run;
 
 /* 日期型 时间型 转换成 年 或 年月 */
@@ -10,6 +10,34 @@ data temp;
 	year_of_Birth = BirthDate;
 	format mth yymmn6. year_of_Birth year.;
 run;
+
+/* sql步 筛选条件，生成变量，拼表 */
+proc sql;
+create table temp as
+select  a.id,
+	year(disbdate)*100+month(disbdate) as disb_mth,
+        intck("month",disbdate,file_date) as mob,
+	case when S1_date>file_date then 0 
+             when S1_date<=disbdate then -1
+             else amt 
+             end as l_amount,
+	DPD,
+	status,
+	F_amt
+from app(where=("01Jan2018"d<=disbdate)) as a left join DT as b
+on a.id=b.id
+;
+quit;
+
+/* sql步 汇总 */
+proc sql;
+create table temp as
+select disb_mth, mob, 
+       sum(l_amount*(DPD>30 and status="A"))/sum(F_amt) as d_rate
+from temp
+group by 1,2
+;
+quit;
 
 /* 交叉频数表 */
 proc freq data=temp(where=(mth>='01oct2020'd and ID in (001 002 003))); *筛选条件;
