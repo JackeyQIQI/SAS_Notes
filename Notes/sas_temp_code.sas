@@ -49,6 +49,10 @@ proc sort data=temp1(where=(not missing(tag))) out=temp2;
 by var1 descending var2;
 run;
 
+/* 统计值 */
+PROC MEANS DATA=TB(KEEP=VARN) n nmiss mean std min p10 p25 p50 p75 p90 max;
+var VARN;
+run;
 
 /* 查看library各表占用空间 */
 proc datasets library=work; 
