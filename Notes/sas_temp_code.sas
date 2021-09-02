@@ -54,10 +54,6 @@ PROC MEANS DATA=TB(KEEP=VARN) n nmiss mean std min p10 p25 p50 p75 p90 max;
 var VARN;
 run;
 
-/* 查看library各表占用空间 */
-proc datasets library=work; 
-run;
-
 /* 表间合并 横向*/
 PROC SQL;
 	CREATE TABLE S.E AS
@@ -70,3 +66,17 @@ QUIT;
 DATA A12;
 	SET A1 A2;
 RUN;
+
+/*数据导入*/
+data lib.dataname;
+	infile "&path.\filename.txt" delimiter='09'x MISSOVER DSD lrecl=32767 firstobs=1 ignoredoseof; /* '09'x 是tab,如果是逗号就写 ',' */
+	input segment:$12. 
+              B_date:YYMMDD10.
+              amt_1-amt_12:best12.;
+run;
+
+/* 查看library各表占用空间 */
+proc datasets library=work; 
+run;
+
+
