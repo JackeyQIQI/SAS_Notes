@@ -34,8 +34,7 @@ select  a.id,
 	status,
 	F_amt
 from app(where=("01Jan2018"d<=disbdate)) as a left join DT as b
-on a.id=b.id
-;
+on a.id=b.id;
 quit;
 
 /* sql步 汇总 */
@@ -44,8 +43,7 @@ create table temp as
 select disb_mth, mob, 
        sum(l_amount*(DPD>30 and status="A"))/sum(F_amt) as d_rate
 from temp
-group by 1,2
-;
+group by 1,2 ;
 quit;
 
 /* 交叉频数表 */
@@ -61,6 +59,12 @@ run;
 /* 统计值 */
 PROC MEANS DATA=TB(KEEP=VARN) n nmiss mean std min p10 p25 p50 p75 p90 max;
 var VARN;
+run;
+
+/*计算分位点*/
+proc univariate data=corp_new_score_201805_201912;
+        var gr_score;
+    output out=pct pctlpts=10 20 30 40 50 60 70 80 90  pctlpre=p;
 run;
 
 /* 表间合并 横向*/
