@@ -62,8 +62,8 @@ var VARN;
 run;
 
 /*计算分位点*/
-proc univariate data=corp_new_score_201805_201912;
-        var gr_score;
+proc univariate data=score_table;
+        var score;
     output out=pct pctlpts=10 20 30 40 50 60 70 80 90  pctlpre=p;
 run;
 
