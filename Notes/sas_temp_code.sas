@@ -11,6 +11,15 @@ data temp;
 	format mth yymmn6. year_of_Birth year.;
 run;
 
+/* 字符型日期时间 转 日期时间型*/
+data temp2;
+	set temp1;
+	format date_new yymmdd10.;
+	date_new = input(date_old, yymmdd8.);
+	format datetime_new datetime.;
+	datetime_new = input(datetime_old, ANYDTDTM40.);
+run;
+
 /* sql步 筛选条件，生成变量，拼表 */
 proc sql;
 create table temp as
