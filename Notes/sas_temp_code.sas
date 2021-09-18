@@ -50,7 +50,7 @@ quit;
 
 /* 交叉频数表 */
 proc freq data=temp(where=(mth>='01oct2020'd and ID in (001 002 003))); *筛选条件;
-	tables mth*if_Report/missing list;
+	tables mth*if_Report/missing list nocol noraw nocum nopercent;
 run;
 
 /* 排序 */
