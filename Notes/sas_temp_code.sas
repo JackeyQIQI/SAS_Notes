@@ -20,6 +20,81 @@ data temp2;
 	datetime_new = input(datetime_old, ANYDTDTM40.);
 run;
 
+
+/* 自定义字符格式 */
+proc format;
+    value $grade_fmt
+	"A", "B", "C" = "PASS"
+	"D", other = "FAIL";
+run;
+ 
+data work.my_data_fmt;
+    set work.my_data;
+    format grade $grade_fmt.;
+run;
+
+/* index：返回一个字符串中，某个特定字符或字符串的位置，找不到时返回0 */
+data temp;
+set temp;
+    if index(upcase(customer_category),"SUB")>0 or index(upcase(customer_category),"SAC")>0 then campaign_flag=1; 
+	else campaign_flag=0;
+run;
+
+/* compress：从一个字符串移除特定的字符，compress(var)去除空格*/
+/* x = compress(var, 'a', 'k'); *keep; */
+/* x = compress(var, 'a', 'd'); *drop; */
+data manual_reject;
+	set temp_app;
+	where application_status="Rejected" and 
+		  index(compress(upcase(Comments_Credit_Soft_Appr)),"R1")<=0 and
+		  index(compress(upcase(Comments_Credit_Soft_Appr)),"R5")<=0 and 
+		  index(compress(upcase(Comments_Credit_Soft_Appr)),"R7")<=0 and
+		  compress(CBRC_Black_Name_List)~="CBRCMatched!!!";
+run;
+
+/* substr提取字符
+substr(s, p, n)从变量s的第p个字符开始取n个字符，中文用ksubstr()*/
+%let curr_mth=202107;
+data _null_;
+	call symputx("curr_mth_end",put(intnx("month",MDY(SUBSTR(LEFT(&curr_mth.),5,2),1,SUBSTR(LEFT(&curr_mth.),1,4)),0,"e"),date9.));
+run;
+%put &curr_mth_end.;
+
+/* scan函数: scan(s,n,"char")表示从字串string中以char为分隔符提取第n个字串。
+功能(function)：从字符表达式s中搜取给定的n个单词
+语法(syntax)
+1、scan(s,n) n为正数时，从字符s末尾提取n个字符
+2、scan(s,n) n为负数时，从字符s开始提取n个字符
+3、scan(s,n<,list-of-delimiters>)
+如果指定分隔符，则只会按照该分隔符提取。
+如果不指定，则按照默认的分隔符拆分，
+默认分隔符为：空格 . < ( + & ! $ *) ; ^ - / , % | 等之一或组合。 */
+data a;
+arg='ABC.DEF(X=Y)';
+word=scan(arg,3);
+put word;
+run;/*word:X=Y*/
+
+data b;
+arg='ABC.DEF(X=Y)';
+word=scan(arg,-3);
+put word;
+run;/*word:ABC*/
+
+data c;
+arg='ABC.DEF(X=Y)';
+word=scan(arg,-20);
+put word;
+run;
+/*word:空格*/
+
+/* 字符连接
+CATX消除首位空格以参数连接符连接；CATS消除首位空格进行顺序连接
+CATT删除连接的尾部空格进行连接；CAT不进行操作直接连接 */
+/* Strip消除首位空格；left消除左边空格；right 消除右边空格；trim消除尾部空格 */
+
+
+
 /* sql步 筛选条件，生成变量，拼表 */
 proc sql;
 create table temp as
