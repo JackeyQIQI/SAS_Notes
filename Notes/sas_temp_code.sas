@@ -1,6 +1,18 @@
-/* 筛选条件 */
+/*生成新表*/
+data temp;
+input name $20. score gender $10.;
+cards;
+aaa 11 F
+bbb 22 M
+ccc 33 F
+;run;
+
+/* 筛选条件 重命名*/
 data temp;
 	set lib.data(where=(Date>="01Jun2021"d) keep=Name Birth Date if_Report);
+	rename 
+		Name = ID
+		Birth = BirthDate;
 run;
 
 /* 日期型 时间型 转换成 年 或 年月 */
